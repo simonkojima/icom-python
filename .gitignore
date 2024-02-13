@@ -1,0 +1,8 @@
+build/
+dist/
+icom.egg-info/
+__pychace__
+_build
+_static
+_templates
+*.pyc
