@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+setup.py
+src/icom/__init__.py
+src/icom/client.py
+src/icom/server.py
+src/icom/utils/__init__.py
+src/icom/utils/common.py
+src/pyicom.egg-info/PKG-INFO
+src/pyicom.egg-info/SOURCES.txt
+src/pyicom.egg-info/dependency_links.txt
+src/pyicom.egg-info/top_level.txt

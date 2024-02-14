@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: pyicom
+Version: 0.0.1
+Summary: python library for intermodule communication protocol
+Home-page: https://github.com/simonkojima/icom-python
+Author: Simon Kojima
+Author-email: simon.kojima@outlook.com
+Project-URL: Bug Tracker, https://github.com/simonkojima/icom-python/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
