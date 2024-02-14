@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyicom
-Version: 0.0.1
+Version: 0.0.5
 Summary: python library for intermodule communication protocol
 Home-page: https://github.com/simonkojima/icom-python
 Author: Simon Kojima

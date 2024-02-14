@@ -3,12 +3,12 @@ import logging
 import threading
 import traceback
 
-from utils.common import send, recv 
+from .common import send, recv 
 
 def excepthook(args):
     print(args.exc_value)
 
-class icom_server():
+class server():
     def __init__(self,
                  ip,
                  port,
@@ -30,6 +30,7 @@ class icom_server():
         self.server.bind((self.ip, self.port))
         
         print("ICOM server info. ip: %s, port: %s"%(str(self.ip), str(self.port)))
+        logger.debug("ICOM server info. ip: %s, port: %s"%(str(self.ip), str(self.port)))
         
         threading.excepthook = excepthook
         thread = threading.Thread(target=self.server_thread, args=(), daemon=True)
@@ -44,14 +45,16 @@ class icom_server():
                 conns.append(self.conns[name])
             send(conns, data, self.length_header, self.length_chunk)
     
-    def recv(self, data, names = None):
+    def recv(self, names = None):
         if names is None:
-            recv(list(self.conns.values()), data, self.length_header, self.length_chunk)
+            data = recv(list(self.conns.values()), self.length_header, self.length_chunk)
         else:
             conns = list()
             for name in names:
                 conns.append(self.conns[name])
-            recv(conns, data, self.length_header, self.length_chunk)
+            data = recv(conns, self.length_header, self.length_chunk)
+        
+        return data
     
     def close(self):
         for conn in list(self.conns.values()):
@@ -79,7 +82,7 @@ def main():
 
     ip = socket.gethostbyname(socket.gethostname())
     port = 49153
-    server = icom_server(ip = ip,
+    server = server(ip = ip,
                          port = port)
     server.start()
     

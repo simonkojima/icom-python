@@ -2,9 +2,9 @@ import socket
 import logging
 import threading
 
-from utils.common import send, recv
+from .common import send, recv
 
-class icom_client():
+class client():
     def __init__(self,
                  ip,
                  port,
@@ -47,7 +47,7 @@ def main():
 
     ip = socket.gethostbyname(socket.gethostname())
     port = 49153
-    client = icom_client(ip = ip,
+    client = client(ip = ip,
                          port = port)
     client.connect()
     while True:
