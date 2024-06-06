@@ -6,18 +6,21 @@ import traceback
 from .common import send, recv 
 
 def excepthook(args):
-    print(args.exc_value)
+    print(traceback.format_exc())
+    #print(args.exc_value)
 
 class server():
     def __init__(self,
                  ip,
                  port,
                  length_header = 64,
-                 length_chunk = 2**12):
+                 length_chunk = 2**12,
+                 timeout = 20):
         self.ip = ip
         self.port = port
         self.length_header = length_header
         self.length_chunk = length_chunk
+        self.timeout = timeout
         
         self.server = None
         self.conns = dict()
@@ -26,7 +29,7 @@ class server():
         logger = logging.getLogger(__name__)
         
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #self.server.settimeout(0.1)
+        self.server.settimeout(self.timeout)
         self.server.bind((self.ip, self.port))
         
         print("ICOM server info. ip: %s, port: %s"%(str(self.ip), str(self.port)))
@@ -63,11 +66,15 @@ class server():
     def server_thread(self):
         logger = logging.getLogger(__name__)
         while True:
-            self.server.listen()
-            conn, addr = self.server.accept()
-            name = recv([conn], self.length_header, self.length_chunk)[0].decode('utf-8')
-            self.conns[name] = conn
-            logger.debug("New socket connection was established. '%s', Name: %s"%(str(addr), name))
+            try:
+                self.server.listen()
+                conn, addr = self.server.accept()
+                name = recv([conn], self.length_header, self.length_chunk)[0].decode('utf-8')
+                self.conns[name] = conn
+                logger.debug("New socket connection was established. '%s', Name: %s"%(str(addr), name))
+            except Exception as e:
+                pass
+
         
 def main():
     import sys
@@ -83,7 +90,7 @@ def main():
     ip = socket.gethostbyname(socket.gethostname())
     port = 49153
     server = server(ip = ip,
-                         port = port)
+                    port = port)
     server.start()
     
     while True:
@@ -98,10 +105,12 @@ def main():
             server.send(data = data.encode('utf-8'), names=['icom-client'])
         except KeyboardInterrupt as e:
             server.close()
+            print(e)
             print(traceback.format_exc())
             break
         except Exception as e:
             server.close()
+            print(e)
             print(traceback.format_exc())
             break
 

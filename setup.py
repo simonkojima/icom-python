@@ -22,7 +22,7 @@ install_requires=[
 
 setuptools.setup(
     name="pyicom",
-    version="0.0.5",
+    version="0.0.6",
     author="Simon Kojima",
     author_email="simon.kojima@outlook.com",
     description="python library for intermodule communication protocol",
