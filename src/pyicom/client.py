@@ -1,19 +1,16 @@
 import socket
 import logging
-import threading
 
-from .common import send, recv
+from common import send, recv
 
 class client():
     def __init__(self,
                  ip,
                  port,
-                 name = "icom-client",
                  length_header = 64,
                  length_chunk = 2**12):
         self.ip = ip
         self.port = port
-        self.name = name
         self.length_header = length_header
         self.length_chunk = length_chunk
         
@@ -31,10 +28,7 @@ class client():
         self.conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.conn.connect((self.ip, self.port)) 
 
-        #self.send(self.name.encode('utf-8'))
-        send([self.conn], self.name.encode('utf-8'), self.length_header, self.length_chunk)
-        
-def main():
+if __name__ == "__main__":
     import sys
     format = '%(asctime)s [%(levelname)s] %(module)s.%(funcName)s %(message)s'
     stdout_handler = logging.StreamHandler(stream = sys.stdout)
@@ -51,10 +45,7 @@ def main():
                          port = port)
     client.connect()
     while True:
-        #input("Press Any Key to Continue")
         data = client.recv()
+        client.send(data)
         #print(data)
     #client.start()
-
-if __name__ == "__main__":
-    main()

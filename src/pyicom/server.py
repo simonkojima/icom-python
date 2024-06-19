@@ -3,7 +3,7 @@ import logging
 import threading
 import traceback
 
-from .common import send, recv 
+from common import send, recv 
 
 def excepthook(args):
     print(traceback.format_exc())
@@ -23,7 +23,7 @@ class server():
         self.timeout = timeout
         
         self.server = None
-        self.conns = dict()
+        self.conns = list()
         
     def start(self):
         logger = logging.getLogger(__name__)
@@ -39,28 +39,14 @@ class server():
         thread = threading.Thread(target=self.server_thread, args=(), daemon=True)
         thread.start()
     
-    def send(self, data, names = None):
-        if names is None:
-            send(list(self.conns.values()), data, self.length_header, self.length_chunk)
-        else:
-            conns = list()
-            for name in names:
-                conns.append(self.conns[name])
-            send(conns, data, self.length_header, self.length_chunk)
+    def send(self, data):
+        send(self.conns, data, self.length_header, self.length_chunk)
     
     def recv(self, names = None):
-        if names is None:
-            data = recv(list(self.conns.values()), self.length_header, self.length_chunk)
-        else:
-            conns = list()
-            for name in names:
-                conns.append(self.conns[name])
-            data = recv(conns, self.length_header, self.length_chunk)
-        
-        return data
+        return recv(self.conns, self.length_header, self.length_chunk)
     
     def close(self):
-        for conn in list(self.conns.values()):
+        for conn in self.conns:
             conn.close()
         
     def server_thread(self):
@@ -69,9 +55,9 @@ class server():
             try:
                 self.server.listen()
                 conn, addr = self.server.accept()
-                name = recv([conn], self.length_header, self.length_chunk)[0].decode('utf-8')
-                self.conns[name] = conn
-                logger.debug("New socket connection was established. '%s', Name: %s"%(str(addr), name))
+                #name = recv([conn], self.length_header, self.length_chunk)[0].decode('utf-8')
+                self.conns.append(conn)
+                logger.debug("New socket connection was established. '%s'"%(str(addr)))
             except Exception as e:
                 pass
 
@@ -89,9 +75,9 @@ def main():
 
     ip = socket.gethostbyname(socket.gethostname())
     port = 49153
-    server = server(ip = ip,
+    sv = server(ip = ip,
                     port = port)
-    server.start()
+    sv.start()
     
     while True:
         try:
@@ -100,16 +86,20 @@ def main():
             for m in range(1000):
                 data += "abcdefghijklmnopqrstuvwxyz"
             data += "abcdefgh"
-            print(len(data))
+            #print(len(data))
             #server.send(data = "Hello from Server.".encode('utf-8'), names = ['icom-client'])
-            server.send(data = data.encode('utf-8'), names=['icom-client'])
+            sv.send(data = data.encode('utf-8'))
+            
+            data = sv.recv()
+            print("recv: %s"%str(data))
+
         except KeyboardInterrupt as e:
-            server.close()
+            sv.close()
             print(e)
             print(traceback.format_exc())
             break
         except Exception as e:
-            server.close()
+            sv.close()
             print(e)
             print(traceback.format_exc())
             break
