@@ -16,10 +16,10 @@ def send(conns, data, length_header, length_chunk):
 
 def recv(conns, length_header, length_chunk):
     logger = logging.getLogger(__name__)
-    
     data = list()
     for conn in conns:
         msg_length = int.from_bytes(conn.recv(length_header), 'little')
+        print(msg_length)
         if msg_length < length_chunk:
             msg = conn.recv(msg_length)
         else:
@@ -33,5 +33,4 @@ def recv(conns, length_header, length_chunk):
                     break
                 length_remained -= length_chunk 
         data.append(msg)
-        
     return data
