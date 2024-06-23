@@ -3,7 +3,10 @@ import logging
 import threading
 import traceback
 
-from .common import send, recv 
+try:
+    from .common import send, recv 
+except:
+    from common import send, recv
 
 def excepthook(args):
     print(traceback.format_exc())

@@ -1,7 +1,10 @@
 import socket
 import logging
 
-from .common import send, recv
+try:
+    from .common import send, recv 
+except:
+    from common import send, recv
 
 class client():
     def __init__(self,
