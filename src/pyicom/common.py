@@ -19,6 +19,7 @@ def recv(conns, length_header, length_chunk):
     data = list()
     for conn in conns:
         msg_length = int.from_bytes(conn.recv(length_header), 'little')
+        print(msg_length)
         if msg_length < length_chunk:
             msg = conn.recv(msg_length)
         else:

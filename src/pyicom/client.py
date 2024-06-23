@@ -1,7 +1,7 @@
 import socket
 import logging
 
-from common import send, recv
+from .common import send, recv
 
 class client():
     def __init__(self,
