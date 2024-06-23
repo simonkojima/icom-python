@@ -45,7 +45,7 @@ class server():
     def send(self, data):
         send(self.conns, data, self.length_header, self.length_chunk)
     
-    def recv(self, names = None):
+    def recv(self):
         return recv(self.conns, self.length_header, self.length_chunk)
     
     def close(self):
@@ -64,8 +64,7 @@ class server():
             except Exception as e:
                 pass
 
-        
-def main():
+if __name__ == "__main__":
     import sys
     format = '%(asctime)s [%(levelname)s] %(module)s.%(funcName)s %(message)s'
     stdout_handler = logging.StreamHandler(stream = sys.stdout)
@@ -106,6 +105,3 @@ def main():
             print(e)
             print(traceback.format_exc())
             break
-
-if __name__ == "__main__":
-    main()
