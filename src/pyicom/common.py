@@ -31,13 +31,10 @@ def recv(conn, length_header, length_chunk, mode = ICOM_BLOCK):
     
     try:
         val = conn.recv(length_header)
-    except socket.timeout as e:
-        conn.settimeout(timeout_original)
-        return b""
-        pass
     except Exception as e:
-        return b""
-        pass
+        conn.settimeout(timeout_original)
+        raise
+        #return b""
 
     if mode == ICOM_NONBLOCK:
         conn.settimeout(timeout_original)

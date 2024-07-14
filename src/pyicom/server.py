@@ -90,9 +90,12 @@ if __name__ == "__main__":
             logger.debug("Sent: %s"%str(data))
             
             while 1:
-                data = sv.recv_nonblock()
-                if (len(data) != 0):
+                try:
+                    data = sv.recv_nonblock()
                     break
+                except:
+                    pass
+
             print("nonblock Received: %s"%str(data))
 
             data = "abcdefghijklmnopqrstuvwxyz"
