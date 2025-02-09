@@ -46,13 +46,17 @@ def main():
     root_logger.addHandler(stdout_handler)
 
     ip = socket.gethostbyname(socket.gethostname())
-    port = 49153
+
+    port = 7400
     client = client(ip = ip,
-                         port = port)
+                    port = port,
+                    length_chunk = 4)
+
     client.connect()
     while True:
         #input("Press Any Key to Continue")
         data = client.recv()
+        client.send(data)
         #print(data)
     #client.start()
 
